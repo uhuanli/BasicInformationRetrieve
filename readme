@@ -1,0 +1,29 @@
+UTF-8
+完成情况：
+1、在作业2的基础上，增加拼写错误检查。若一个查询词在索引中找不到，则会根据编辑距离以及jaccard系数推荐三个最相近的词项。
+2、完成布尔检索模型支持布尔查询。我定义的布尔查询规则如下：
+	1)默认空格表示与操作，"/n"表示在位置距离绝对值在n以内的与操作，竖线符号"|"表示或操作，感叹号"!"表示非操作，引号""表示词组查询。
+	2)词组查询是特殊的与操作："A B"表示B在A后面一个位置出现的与操作
+	3)非操作优先级最高，词组查询次之，与操作再次之，或操作优先级最低
+	4)支持括号()，括号内部操作先进行
+	5)"!"后面必须紧跟一个查询词，之间不能有空格，否则报错
+	6)括号必须匹配，引号必须匹配，否则报错
+	7)不支持单纯的与操作和非操作的结果进一步进行位置信息相关查询
+	8)多个带位置的与操作严格按照从左到右顺序，不支持使用括号改变多个带位置的与操作的顺序。
+	9)查询会被转为小写格式
+5、查询示例：
+	1)若搜索you错误输入为yuo，则会显示
+		For yuo do you mean: quo you your
+	2)若搜索like friend错误输入为likk friemd，则会显示	
+		For likk do you mean: link lick like
+		For friemd do you mean: friend friends field
+
+环境：
+操作系统 linux
+boost库 1.43
+
+使用方法：
+1、make：编译生成buildIndex和searchQuery两个可执行文件置于该目录下。
+2、./buildIndex your_doc_input_directory：对your_doc_input_directory目录下文档集进行索引构建，结果会生成index目录存放倒排索引文件和文档对应id文件。
+3、./searchQuery：执行searchQuery进行布尔查询。可不断输入查询。输入/q退出程序。
+4、make clean：清除index文件夹、buildIndex和searchQuery。
